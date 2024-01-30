@@ -87,7 +87,7 @@ public class RewardFeature implements LabelConfigGroup {
 		ElderGuardianEntity elderGuardian = (ElderGuardianEntity) event.getEntity();
 
 		for (Drop drop : this.dropsList) {
-			drop.drop(elderGuardian.world, elderGuardian.getPos(), BaseFeature.getDeadElderGuardians(elderGuardian));
+			drop.drop(elderGuardian.getWorld(), elderGuardian.getPos(), BaseFeature.getDeadElderGuardians(elderGuardian));
 		}
 	}
 }

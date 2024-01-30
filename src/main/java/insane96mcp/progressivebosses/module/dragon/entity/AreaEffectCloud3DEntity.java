@@ -30,7 +30,7 @@ public class AreaEffectCloud3DEntity extends AreaEffectCloudEntity {
 	}
 
 	public AreaEffectCloud3DEntity(AreaEffectCloudEntity areaEffectCloudEntity) {
-		this(ProgressiveBosses.AREA_EFFECT_CLOUD_3D, areaEffectCloudEntity.world);
+		this(ProgressiveBosses.AREA_EFFECT_CLOUD_3D, areaEffectCloudEntity.getWorld());
 		this.setPos(areaEffectCloudEntity.getX(), areaEffectCloudEntity.getY(), areaEffectCloudEntity.getZ());
 		NbtCompound nbt = new NbtCompound();
 		areaEffectCloudEntity.saveSelfNbt(nbt);
@@ -48,7 +48,7 @@ public class AreaEffectCloud3DEntity extends AreaEffectCloudEntity {
 	public void tick() {
 		boolean isWaiting = this.isWaiting();
 		float radius = this.getRadius();
-		if (this.world.isClient) {
+		if (this.getWorld().isClient) {
 			ParticleEffect particleOptions = this.getParticleType();
 			if (isWaiting) {
 				if (this.random.nextBoolean()) {
@@ -62,10 +62,10 @@ public class AreaEffectCloud3DEntity extends AreaEffectCloudEntity {
 							int k = j >> 16 & 255;
 							int l = j >> 8 & 255;
 							int i1 = j & 255;
-							this.world.addParticle(particleOptions, this.getX() + (double)x, this.getY(), this.getZ() + (double)z, (double)((float)k / 255.0F), (double)((float)l / 255.0F), (double)((float)i1 / 255.0F));
+							this.getWorld().addParticle(particleOptions, this.getX() + (double)x, this.getY(), this.getZ() + (double)z, (double)((float)k / 255.0F), (double)((float)l / 255.0F), (double)((float)i1 / 255.0F));
 						}
 						else {
-							this.world.addParticle(particleOptions, this.getX() + (double)x, this.getY(), this.getZ() + (double)z, 0.0D, 0.0D, 0.0D);
+							this.getWorld().addParticle(particleOptions, this.getX() + (double)x, this.getY(), this.getZ() + (double)z, 0.0D, 0.0D, 0.0D);
 						}
 					}
 				}
@@ -87,9 +87,9 @@ public class AreaEffectCloud3DEntity extends AreaEffectCloudEntity {
 						int i2 = l1 >> 16 & 255;
 						int j2 = l1 >> 8 & 255;
 						int j1 = l1 & 255;
-						this.world.addParticle(particleOptions, this.getX() + (double)x, this.getY() + (double)y, this.getZ() + (double)z, (float)i2 / 255.0F, (float)j2 / 255.0F, (float)j1 / 255.0F);
+						this.getWorld().addParticle(particleOptions, this.getX() + (double)x, this.getY() + (double)y, this.getZ() + (double)z, (float)i2 / 255.0F, (float)j2 / 255.0F, (float)j1 / 255.0F);
 					} else {
-						this.world.addParticle(particleOptions, this.getX() + (double)x, this.getY() + (double)y, this.getZ() + (double)z, (0.5D - this.random.nextDouble()) * 0.15D, (double)0.01F, (0.5D - this.random.nextDouble()) * 0.15D);
+						this.getWorld().addParticle(particleOptions, this.getX() + (double)x, this.getY() + (double)y, this.getZ() + (double)z, (0.5D - this.random.nextDouble()) * 0.15D, (double)0.01F, (0.5D - this.random.nextDouble()) * 0.15D);
 					}
 				}
 			}
@@ -132,7 +132,7 @@ public class AreaEffectCloud3DEntity extends AreaEffectCloudEntity {
 				if (list.isEmpty()) {
 					this.affectedEntities.clear();
 				} else {
-					List<LivingEntity> list1 = this.world.getNonSpectatingEntities(LivingEntity.class, this.getBoundingBox());
+					List<LivingEntity> list1 = this.getWorld().getNonSpectatingEntities(LivingEntity.class, this.getBoundingBox());
 					if (!list1.isEmpty()) {
 						for(LivingEntity livingentity : list1) {
 							if (!this.affectedEntities.containsKey(livingentity) && livingentity.isAffectedBySplashPotions()) {

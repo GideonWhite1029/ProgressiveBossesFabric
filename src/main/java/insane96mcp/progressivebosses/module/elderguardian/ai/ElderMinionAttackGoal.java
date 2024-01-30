@@ -3,6 +3,7 @@ package insane96mcp.progressivebosses.module.elderguardian.ai;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.ElderGuardianEntity;
 import net.minecraft.entity.mob.GuardianEntity;
@@ -65,11 +66,11 @@ public class ElderMinionAttackGoal extends Goal {
 		if (this.attackTime == 0) {
 			this.guardian.setBeamTarget(this.guardian.getTarget().getId());
 			if (!this.guardian.isSilent()) {
-				this.guardian.world.sendEntityStatus(this.guardian, (byte)21);
+				this.guardian.getWorld().sendEntityStatus(this.guardian, (byte)21);
 			}
 		} else if (this.attackTime >= this.guardian.getWarmupTime()) {
 			float f = 1.0F;
-			if (this.guardian.world.getDifficulty() == Difficulty.HARD) {
+			if (this.guardian.getWorld().getDifficulty() == Difficulty.HARD) {
 				f += 2.0F;
 			}
 
@@ -77,7 +78,7 @@ public class ElderMinionAttackGoal extends Goal {
 				f += 2.0F;
 			}
 
-			livingentity.damage(DamageSource.magic(this.guardian, this.guardian), f);
+			livingentity.damage(DamageSources.magic(this.guardian, this.guardian), f);
 			livingentity.damage(DamageSource.mob(this.guardian), (float)this.guardian.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE));
 			this.guardian.setTarget(null);
 		}

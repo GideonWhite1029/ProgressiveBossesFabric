@@ -58,14 +58,14 @@ public class MiscFeature implements LabelConfigGroup {
 			DispenserBlock.registerBehavior(Items.WITHER_SKELETON_SKULL, new WitherSkullDispenseBehavior());
 			behaviourRegistered = true;
 		}
-		LivingEntityEvents.TICK.register((entity) -> this.onUpdate(new DummyEvent(entity.world, entity)));
+		LivingEntityEvents.TICK.register((entity) -> this.onUpdate(new DummyEvent(entity.getWorld(), entity)));
 		ExplosionEvents.EXPLODE.register((event) -> this.onExplosion(event));
 		LivingEntityEvents.HURT.register((event) -> this.onWitherDamage(event));
 		
 	}
 	
 	public void onUpdate(DummyEvent event) {
-		if (event.getEntity().world.isClient)
+		if (event.getEntity().getWorld().isClient)
 			return;
 		
 		if (!this.biggerBlockBreaking)
@@ -100,16 +100,16 @@ public class MiscFeature implements LabelConfigGroup {
 						int k = i1 + j;
 						int l = i2 + l2;
 						BlockPos blockpos = new BlockPos(i3, k, l);
-						BlockState blockstate = wither.world.getBlockState(blockpos);
+						BlockState blockstate = wither.getWorld().getBlockState(blockpos);
 						if (canWitherDestroy(wither, blockpos, blockstate)) {
-							flag = wither.world.breakBlock(blockpos, true, wither) || flag;
+							flag = wither.getWorld().breakBlock(blockpos, true, wither) || flag;
 						}
 					}
 				}
 			}
 			
 			if (flag) {
-				wither.world.syncWorldEvent(null, 1022, wither.getBlockPos(), 0);
+				wither.getWorld().syncWorldEvent(null, 1022, wither.getBlockPos(), 0);
 			}
 		}
 		// }
@@ -117,7 +117,7 @@ public class MiscFeature implements LabelConfigGroup {
 	
 	private boolean canWitherDestroy(WitherEntity wither, BlockPos pos, BlockState state) {
 		if (this.ignoreWitherProofBlocks)
-			return !state.isAir() && state.getHardness(wither.world, pos) >= 0f;
+			return !state.isAir() && state.getHardness(wither.getWorld(), pos) >= 0f;
 		 else
 		    return WitherEntity.canDestroy(state);
 	}
@@ -151,7 +151,7 @@ public class MiscFeature implements LabelConfigGroup {
 	}
 	
 	public void onWitherDamage(OnLivingHurtEvent event) {
-		if (event.getEntity().world.isClient)
+		if (event.getEntity().getWorld().isClient)
 			return;
 		
 		if (!this.fasterBlockBreaking)

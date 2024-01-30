@@ -35,6 +35,6 @@ public class AEC3DFeature implements LabelConfigGroup {
 		areaEffectCloud.remove(RemovalReason.DISCARDED);
 		AreaEffectCloud3DEntity areaEffectCloud3D = new AreaEffectCloud3DEntity(areaEffectCloud);
 
-		areaEffectCloud3D.world.spawnEntity(areaEffectCloud3D);
+		areaEffectCloud3D.getWorld().spawnEntity(areaEffectCloud3D);
 	}
 }

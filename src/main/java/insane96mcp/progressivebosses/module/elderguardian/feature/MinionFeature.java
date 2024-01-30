@@ -48,7 +48,7 @@ public class MinionFeature implements LabelConfigGroup {
 	public MinionFeature(LabelConfigGroup parent) {
 		parent.addConfigContainer(this);
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> this.onElderGuardianSpawn(new DummyEvent(world, entity)));
-		LivingEntityEvents.TICK.register((entity) -> this.update(new DummyEvent(entity.world, entity)));
+		LivingEntityEvents.TICK.register((entity) -> this.update(new DummyEvent(entity.getWorld(), entity)));
 	}
 
 	public void onElderGuardianSpawn(DummyEvent event) {
@@ -66,13 +66,13 @@ public class MinionFeature implements LabelConfigGroup {
 	}
 
 	public void update(DummyEvent event) {
-		if (event.getEntity().world.isClient)
+		if (event.getEntity().getWorld().isClient)
 			return;
 
 		if (!(event.getEntity() instanceof ElderGuardianEntity))
 			return;
 
-		World world = event.getEntity().world;
+		World world = event.getEntity().getWorld();
 
 		ElderGuardianEntity elderGuardian = (ElderGuardianEntity) event.getEntity();
 		NbtCompound elderGuardianTags = ((IEntityExtraData) elderGuardian).getPersistentData();
@@ -115,7 +115,7 @@ public class MinionFeature implements LabelConfigGroup {
 		minionTags.putBoolean(Strings.Tags.ELDER_MINION, true);
 
 		elderMinion.setPosition(pos.x, pos.y, pos.z);
-		elderMinion.setCustomName(MutableText.of(new TranslatableTextContent(Strings.Translatable.ELDER_MINION)));
+		elderMinion.setCustomName(MutableText.of(new TranslatableTextContent(Strings.Translatable.ELDER_MINION, null, null)));
 		elderMinion.lootTable = LootTables.EMPTY;
 
 		MCUtils.applyModifier(elderMinion, EntityAttributes.GENERIC_MOVEMENT_SPEED, Strings.AttributeModifiers.SWIM_SPEED_BONUS_UUID, Strings.AttributeModifiers.SWIM_SPEED_BONUS, 2d, EntityAttributeModifier.Operation.MULTIPLY_BASE);

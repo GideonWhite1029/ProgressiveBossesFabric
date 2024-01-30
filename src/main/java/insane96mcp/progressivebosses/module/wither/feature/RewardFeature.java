@@ -77,7 +77,7 @@ public class RewardFeature implements LabelConfigGroup {
 		NbtCompound tags = ((IEntityExtraData) wither).getPersistentData();
 		float difficulty = tags.getFloat(Strings.Tags.DIFFICULTY);
 		for (Drop drop : this.dropsList) {
-			drop.drop(wither.world, wither.getPos(), difficulty);
+			drop.drop(wither.getWorld(), wither.getPos(), difficulty);
 		}
 	}
 }

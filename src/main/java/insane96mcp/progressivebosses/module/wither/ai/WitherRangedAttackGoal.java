@@ -41,7 +41,7 @@ public class WitherRangedAttackGoal extends Goal {
 			return false;
 
 		int targetId = this.wither.getTrackedEntityId(0);
-		Entity entity = this.wither.world.getEntityById(targetId);
+		Entity entity = this.wither.getWorld().getEntityById(targetId);
 		if (entity == null)
 			return false;
 		if (!(entity instanceof LivingEntity livingEntity))
@@ -93,7 +93,7 @@ public class WitherRangedAttackGoal extends Goal {
 			//Stops the wither from chasing the player
 			this.wither.setVelocity(0d, wither.getVelocity().y, 0d);
 		}
-		else if (this.seeTime <= 0 && !this.wither.world.getBlockState(this.wither.getBlockPos().down()).isOpaque() && !this.wither.world.isSkyVisible(this.wither.getBlockPos())) {
+		else if (this.seeTime <= 0 && !this.wither.getWorld().getBlockState(this.wither.getBlockPos().down()).isOpaque() && !this.wither.world.isSkyVisible(this.wither.getBlockPos())) {
 			this.wither.setVelocity(wither.getVelocity().x, -1.0d, wither.getVelocity().z);
 		}
 

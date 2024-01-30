@@ -35,7 +35,7 @@ public class HealthFeature implements LabelConfigGroup {
 	public HealthFeature(LabelConfigGroup parent) {
 		parent.addConfigContainer(this);
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> this.onSpawn(new DummyEvent(world, entity)));
-		LivingEntityEvents.TICK.register((entity) -> this.onUpdate(new DummyEvent(entity.world, entity)));
+		LivingEntityEvents.TICK.register((entity) -> this.onUpdate(new DummyEvent(entity.getWorld(), entity)));
 
 	}
 
@@ -67,7 +67,7 @@ public class HealthFeature implements LabelConfigGroup {
 	}
 
 	public void onUpdate(DummyEvent event) {
-		if (event.getEntity().world.isClient)
+		if (event.getEntity().getWorld().isClient)
 			return;
 
 		if (!(event.getEntity() instanceof ElderGuardianEntity))

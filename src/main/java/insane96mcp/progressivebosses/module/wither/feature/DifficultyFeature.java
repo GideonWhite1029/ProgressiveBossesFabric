@@ -19,6 +19,8 @@ import net.minecraft.util.math.Box;
 import java.util.Arrays;
 import java.util.List;
 
+import static insane96mcp.progressivebosses.utils.Strings.Translatable.FIRST_WITHER_SUMMON;
+
 @ConfigEntries(includeAll = true)
 @Label(name = "Difficulty Settings", description = "How difficulty is handled for the Wither.")
 public class DifficultyFeature implements LabelConfigGroup {
@@ -101,7 +103,7 @@ public class DifficultyFeature implements LabelConfigGroup {
 				if (difficulty.getSpawnedWithers() >= this.maxDifficulty)
 					return;
 				if (difficulty.getSpawnedWithers() <= this.startingDifficulty && this.showFirstSummonedWitherMessage)
-					player.sendMessage(MutableText.of(new TranslatableTextContent(Strings.Translatable.FIRST_WITHER_SUMMON)), false);
+					player.sendMessage(MutableText.of(new TranslatableTextContent(Strings.Translatable.FIRST_WITHER_SUMMON, null, null)), false);
 				difficulty.addSpawnedWithers(1);
 				System.out.println("[Progressive Bosses] Player " + player.getName().getString() + " spawned a Wither. Difficulty: " + difficulty.getSpawnedWithers());
 			});

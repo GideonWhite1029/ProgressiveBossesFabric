@@ -56,10 +56,10 @@ public class ElderMinionNearestAttackableTargetGoal<T extends LivingEntity> exte
 
 	protected void findNearestTarget() {
 		if (this.targetClass != PlayerEntity.class && this.targetClass != ServerPlayerEntity.class) {
-			this.nearestTarget = this.mob.world.getClosestEntity(this.targetClass, this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ(), this.getTargetableArea(this.getFollowRange()));
+			this.nearestTarget = this.mob.getWorld().getClosestEntity(this.targetClass, this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ(), this.getTargetableArea(this.getFollowRange()));
 		}
 		else {
-			this.nearestTarget = this.mob.world.getClosestPlayer(this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+			this.nearestTarget = this.mob.getWorld().getClosestPlayer(this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
 		}
 
 	}

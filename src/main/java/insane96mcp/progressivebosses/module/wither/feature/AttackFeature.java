@@ -69,7 +69,7 @@ public class AttackFeature implements LabelConfigGroup {
 	public AttackFeature(LabelConfigGroup parent) {
 		parent.addConfigContainer(this);
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> this.onSpawn(new DummyEvent(world, entity)));
-		LivingEntityEvents.TICK.register((entity) -> this.onUpdate(new DummyEvent(entity.world, entity)));
+		LivingEntityEvents.TICK.register((entity) -> this.onUpdate(new DummyEvent(entity.getWorld(), entity)));
 		LivingEntityEvents.HURT.register((event) -> this.onDamaged(event));
 		LivingEntityEvents.HURT.register((event) -> this.onDamageDealt(event));
 	}
@@ -116,7 +116,7 @@ public class AttackFeature implements LabelConfigGroup {
 
 		tickCharge(wither);
 
-		if (event.getEntity().world.isClient)
+		if (event.getEntity().getWorld().isClient)
 			return;
 
 		chargeUnseen(wither);
@@ -147,7 +147,7 @@ public class AttackFeature implements LabelConfigGroup {
 	}
 
 	public void onDamageDealt(OnLivingHurtEvent event) {
-		if (event.getEntity().world.isClient)
+		if (event.getEntity().getWorld().isClient)
 			return;
 
 		if (this.increasedDamage == 0d)
@@ -168,7 +168,7 @@ public class AttackFeature implements LabelConfigGroup {
 	}
 
 	public void onDamaged(OnLivingHurtEvent event) {
-		if (event.getEntity().world.isClient)
+		if (event.getEntity().getWorld().isClient)
 			return;
 
 		if (!event.getEntity().isAlive())
@@ -238,14 +238,14 @@ public class AttackFeature implements LabelConfigGroup {
 
 	public static void initCharging(WitherEntity wither) {
 		((IEntityExtraData) wither).getPersistentData().putByte(Strings.Tags.CHARGE_ATTACK, (byte) Consts.CHARGE_ATTACK_TICK_START);
-		for (PlayerEntity player : wither.world.getPlayers()) {
+		for (PlayerEntity player : wither.getWorld().getPlayers()) {
 			PacketManagerServer.MessageWitherSync((ServerPlayerEntity) player, wither, (byte) Consts.CHARGE_ATTACK_TICK_START);
 		}
 	}
 
 	public static void stopCharging(WitherEntity wither) {
 		((IEntityExtraData) wither).getPersistentData().putByte(Strings.Tags.CHARGE_ATTACK, (byte) 0);
-		for (PlayerEntity player : wither.world.getPlayers()) {
+		for (PlayerEntity player : wither.getWorld().getPlayers()) {
 			PacketManagerServer.MessageWitherSync((ServerPlayerEntity) player, wither, (byte) 0);
 		}
 	}

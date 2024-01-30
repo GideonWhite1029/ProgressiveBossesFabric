@@ -34,7 +34,7 @@ public class BaseFeature implements LabelConfigGroup {
 	}
 
 	public void onPlayerTick(PlayerEntity player) {
-		if (player.world.isClient)
+		if (player.getWorld().isClient)
 			return;
 
 		if (!this.adventure)
@@ -47,7 +47,7 @@ public class BaseFeature implements LabelConfigGroup {
 			return;
 
 		ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
-		ServerWorld world = (ServerWorld) serverPlayer.world;
+		ServerWorld world = (ServerWorld) serverPlayer.getWorld();
 
 		NbtCompound nbt = ((IEntityExtraData) serverPlayer).getPersistentData();
 		boolean previouslyNearElderGuardian = nbt.getBoolean(Strings.Tags.PREVIOUSLY_NEAR_ELDER_GUARDIAN);
@@ -60,7 +60,7 @@ public class BaseFeature implements LabelConfigGroup {
 			serverPlayer.interactionManager.changeGameMode(GameMode.ADVENTURE);
 			serverPlayer.networkHandler.sendPacket(new GameStateChangeS2CPacket(GameStateChangeS2CPacket.GAME_MODE_CHANGED, (float)GameMode.ADVENTURE.getId()));
 			if (!adventureMessage) {
-				serverPlayer.sendMessage(MutableText.of(new TranslatableTextContent(Strings.Translatable.APPROACHING_ELDER_GUARDIAN)), false);
+				serverPlayer.sendMessage(MutableText.of(new TranslatableTextContent(Strings.Translatable.APPROACHING_ELDER_GUARDIAN, null, null)), false);
 				nbt.putBoolean(Strings.Tags.ADVENTURE_MESSAGE, true);
 			}
 		}
@@ -111,7 +111,7 @@ public class BaseFeature implements LabelConfigGroup {
 
 		ElderGuardianEntity elderGuardian = (ElderGuardianEntity) event.getEntity();
 
-		int elderGuardiansNearby = elderGuardian.world.getOtherEntities(elderGuardian, elderGuardian.getBoundingBox().expand(48d), entity -> entity instanceof ElderGuardianEntity).size();
+		int elderGuardiansNearby = elderGuardian.getWorld().getOtherEntities(elderGuardian, elderGuardian.getBoundingBox().expand(48d), entity -> entity instanceof ElderGuardianEntity).size();
 		if (elderGuardiansNearby == 0)
 			return;
 
@@ -119,7 +119,7 @@ public class BaseFeature implements LabelConfigGroup {
 	}
 
 	public static int getDeadElderGuardians(ElderGuardianEntity elderGuardian) {
-		int elderGuardiansNearby = elderGuardian.world.getOtherEntities(elderGuardian, elderGuardian.getBoundingBox().expand(48d), entity -> entity instanceof ElderGuardianEntity).size();
+		int elderGuardiansNearby = elderGuardian.getWorld().getOtherEntities(elderGuardian, elderGuardian.getBoundingBox().expand(48d), entity -> entity instanceof ElderGuardianEntity).size();
 		return 2 - elderGuardiansNearby;
 	}
 }

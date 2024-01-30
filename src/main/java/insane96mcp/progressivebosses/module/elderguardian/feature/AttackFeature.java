@@ -27,7 +27,7 @@ public class AttackFeature implements LabelConfigGroup {
 	}
 
 	public void onDamageDealt(OnLivingHurtEvent event) {
-		if (event.getEntity().world.isClient)
+		if (event.getEntity().getWorld().isClient)
 			return;
 
 		if (this.bonusDamage == 0d)
@@ -49,7 +49,7 @@ public class AttackFeature implements LabelConfigGroup {
 	public int getAttackDuration(ElderGuardianEntity elderGuardian) {
 		if (this.attackDurationReduction == 0)
 			return BASE_ATTACK_DURATION;
-		int elderGuardiansNearby = elderGuardian.world.getOtherEntities(elderGuardian, elderGuardian.getBoundingBox().expand(48d), entity -> entity instanceof ElderGuardianEntity).size();
+		int elderGuardiansNearby = elderGuardian.getWorld().getOtherEntities(elderGuardian, elderGuardian.getBoundingBox().expand(48d), entity -> entity instanceof ElderGuardianEntity).size();
 		if (elderGuardiansNearby == 2)
 			return BASE_ATTACK_DURATION;
 
