@@ -18,9 +18,11 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.EntityDamageSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -28,6 +30,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 public class WitherChargeAttackGoal extends Goal {
 	private final WitherEntity wither;
@@ -54,7 +57,7 @@ public class WitherChargeAttackGoal extends Goal {
 		for (int h = 0; h < 3; h++)
 			this.wither.setTrackedEntityId(h, 0);
 
-		this.wither.world.playSound(null, this.wither.getBlockPos(), SoundEvents.ENTITY_WITHER_DEATH, SoundCategory.HOSTILE, 5.0f, 2.0f);
+		this.wither.getWorld().playSound(null, this.wither.getBlockPos(), SoundEvents.ENTITY_WITHER_DEATH, SoundCategory.HOSTILE, 5.0f, 2.0f);
 	}
 
 	/**
@@ -75,7 +78,7 @@ public class WitherChargeAttackGoal extends Goal {
 		this.targetPos = null;
 
 		for(Pair<ItemStack, BlockPos> pair : blocksToDrop) {
-			Block.dropStack(this.wither.world, pair.getSecond(), pair.getFirst());
+			Block.dropStack(this.wither.getWorld(), pair.getSecond(), pair.getFirst());
 		}
 	}
 
@@ -96,13 +99,13 @@ public class WitherChargeAttackGoal extends Goal {
 			this.wither.setVelocity(Vec3d.ZERO);
 
 		if (chargeTick == AttackFeature.Consts.CHARGE_ATTACK_TICK_CHARGE) {
-			this.target = this.wither.world.getClosestPlayer(this.wither.getX(), this.wither.getY(), this.wither.getZ(), 64d, true);
+			this.target = this.wither.getWorld().getClosestPlayer(this.wither.getX(), this.wither.getY(), this.wither.getZ(), 64d, true);
 			if (target != null) {
 				this.targetPos = this.target.getPos().add(0, -1.5d, 0);
 				Vec3d forward = this.targetPos.subtract(this.wither.getPos()).normalize();
 				this.targetPos = this.targetPos.add(forward.multiply(4d, 4d, 4d));
 				this.lastDistanceFromTarget = this.targetPos.squaredDistanceTo(this.wither.getPos());
-				this.wither.world.playSound(null, new BlockPos(this.targetPos), SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.HOSTILE, 4.0f, 2.0f);
+				this.wither.getWorld().playSound(null, new BlockPos(this.targetPos), SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.HOSTILE, 4.0f, 2.0f);
 			}
 			else {
 				AttackFeature.stopCharging(this.wither);
@@ -122,26 +125,26 @@ public class WitherChargeAttackGoal extends Goal {
 			Stream<BlockPos> blocks = BlockPos.stream(axisAlignedBB);
 			AtomicBoolean hasBrokenBlocks = new AtomicBoolean(false);
 			blocks.forEach(blockPos -> {
-				BlockState state = wither.world.getBlockState(blockPos);
+				BlockState state = wither.getWorld().getBlockState(blockPos);
 				// if (state.canEntityDestroy(wither.world, blockPos, wither) && net.minecraftforge.event.ForgeEventFactory.onEntityDestroyBlock(wither, blockPos, state) && !state.getBlock().equals(Blocks.AIR)) {
-					BlockEntity tileentity = state.hasBlockEntity() ? this.wither.world.getBlockEntity(blockPos) : null;
-					LootContext.Builder lootcontext$builder = (new LootContext.Builder((ServerWorld)this.wither.world)).random(this.wither.world.random).parameter(LootContextParameters.ORIGIN, Vec3d.ofCenter(blockPos)).parameter(LootContextParameters.TOOL, ItemStack.EMPTY).optionalParameter(LootContextParameters.BLOCK_ENTITY, tileentity);
+					BlockEntity tileentity = state.hasBlockEntity() ? this.wither.getWorld().getBlockEntity(blockPos) : null;
+					LootContext.Builder lootcontext$builder = (new LootContext.Builder((LootContextParameterSet) this.wither.getWorld().random).parameter(LootContextParameters.ORIGIN, Vec3d.ofCenter(blockPos)).parameter(LootContextParameters.TOOL, ItemStack.EMPTY).optionalParameter(LootContextParameters.BLOCK_ENTITY, tileentity);
 					state.getDroppedStacks(lootcontext$builder).forEach(itemStack -> {
 						addBlockDrops(blocksToDrop, itemStack, blockPos);
 					});
-					wither.world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+					wither.getWorld().setBlockState(blockPos, Blocks.AIR.getDefaultState());
 					hasBrokenBlocks.set(true);
 				// }
 			});
 
 			if (hasBrokenBlocks.get() && this.wither.age % 2 == 0)
-				this.wither.world.playSound(null, new BlockPos(this.targetPos), SoundEvents.ENTITY_WITHER_BREAK_BLOCK, SoundCategory.HOSTILE, 1.0f, 0.75f);
+				this.wither.getWorld().playSound(null, new BlockPos(this.targetPos), SoundEvents.ENTITY_WITHER_BREAK_BLOCK, SoundCategory.HOSTILE, 1.0f, 0.75f);
 
 			axisAlignedBB = axisAlignedBB.expand(1d);
-			this.wither.world.getNonSpectatingEntities(LivingEntity.class, axisAlignedBB).forEach(entity -> {
+			this.wither.getWorld().getNonSpectatingEntities(LivingEntity.class, axisAlignedBB).forEach(entity -> {
 				if (entity == this.wither)
 					return;
-				entity.damage(new EntityDamageSource(Strings.Translatable.WITHER_CHARGE_ATTACK, this.wither), 16f);
+				entity.damage(new DamageSource(Strings.Translatable.WITHER_CHARGE_ATTACK, this.wither), 16f);
 				double d2 = entity.getX() - this.wither.getX();
 				double d3 = entity.getZ() - this.wither.getZ();
 				double d4 = Math.max(d2 * d2 + d3 * d3, 0.1D);

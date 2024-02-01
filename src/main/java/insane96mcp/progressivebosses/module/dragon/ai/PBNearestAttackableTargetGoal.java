@@ -16,7 +16,7 @@ public class PBNearestAttackableTargetGoal extends ActiveTargetGoal<PlayerEntity
     }
 
     public boolean canStart() {
-        return this.mob.world.getDifficulty() != Difficulty.PEACEFUL && super.canStart();
+        return this.mob.getWorld().getDifficulty() != Difficulty.PEACEFUL && super.canStart();
     }
 
 

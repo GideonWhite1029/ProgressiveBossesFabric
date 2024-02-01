@@ -18,6 +18,7 @@ import insane96mcp.progressivebosses.utils.Strings;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.minecraft.block.EndPortalBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
@@ -39,6 +40,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.EndGatewayFeature;
 import net.minecraft.world.gen.feature.EndPortalFeature;
 
 @ConfigEntries(includeAll = true)
@@ -78,7 +80,7 @@ public class MinionFeature implements LabelConfigGroup {
 			this.minCooldown = this.maxCooldown;
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> this.onDragonSpawn(new DummyEvent(world, entity)));
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> this.onShulkerSpawn(new DummyEvent(world, entity)));
-		LivingEntityEvents.TICK.register((entity) -> this.update(new DummyEvent(entity.world, entity)));
+		LivingEntityEvents.TICK.register((entity) -> this.update(new DummyEvent(entity.getWorld(), entity)));
 		LivingEntityEvents.HURT.register((event) -> this.onMinionHurt(event));
 
 	}
@@ -111,13 +113,13 @@ public class MinionFeature implements LabelConfigGroup {
 	}
 
 	public void update(DummyEvent event) {
-		if (event.getEntity().world.isClient)
+		if (event.getEntity().getWorld().isClient)
 			return;
 
 		if (!(event.getEntity() instanceof EnderDragonEntity dragon))
 			return;
 
-		World world = event.getEntity().world;
+		World world = event.getEntity().getWorld();
 
 		NbtCompound dragonTags = ((IEntityExtraData) dragon).getPersistentData();
 
@@ -135,7 +137,7 @@ public class MinionFeature implements LabelConfigGroup {
 		}
 
 		//If there is no player in the main island don't spawn minions
-		BlockPos centerPodium = dragon.world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.ORIGIN);
+		BlockPos centerPodium = dragon.getWorld().getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.ORIGIN);
 		Box bb = new Box(centerPodium).expand(64d);
 		List<ServerPlayerEntity> players = world.getNonSpectatingEntities(ServerPlayerEntity.class, bb);
 
@@ -152,7 +154,7 @@ public class MinionFeature implements LabelConfigGroup {
 		float angle = world.random.nextFloat() * (float) Math.PI * 2f;
 		float x = (float) (Math.cos(angle) * (RandomHelper.getFloat(dragon.getRandom(), 16f, 45f)));
 		float z = (float) (Math.sin(angle) * (RandomHelper.getFloat(dragon.getRandom(), 16f, 45f)));
-		float y = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING, new BlockPos(x, 255, z)).getY();
+		float y = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING, new BlockPos((int) x, 255, (int) z)).getY();
 		summonMinion(world, new Vec3d(x, y, z), difficulty);
 	}
 
@@ -190,7 +192,7 @@ public class MinionFeature implements LabelConfigGroup {
 		boolean isBlindingMinion = world.getRandom().nextDouble() < this.blindingChance * difficulty;
 
 		shulker.setPosition(pos.x, pos.y, pos.z);
-		shulker.setCustomName(MutableText.of(new TranslatableTextContent(Strings.Translatable.DRAGON_MINION)));
+		shulker.setCustomName(MutableText.of(new TranslatableTextContent(Strings.Translatable.DRAGON_MINION, null, null)));
 		shulker.lootTable = LootTables.EMPTY;
 		shulker.setPersistent();
 		DragonMinionHelper.setMinionColor(shulker, isBlindingMinion);
@@ -217,8 +219,8 @@ public class MinionFeature implements LabelConfigGroup {
 	}
 
 	public void onBulletTick(ShulkerBulletEntity shulkerBulletEntity) {
-		if (!shulkerBulletEntity.world.isClient && ((IEntityExtraData) shulkerBulletEntity).getPersistentData().getBoolean(Strings.Tags.BLINDNESS_BULLET)) {
-			((ServerWorld)shulkerBulletEntity.world).spawnParticles(ParticleTypes.ENTITY_EFFECT, shulkerBulletEntity.getX(), shulkerBulletEntity.getY(), shulkerBulletEntity.getZ(), 1, 0d, 0d, 0d, 0d);
+		if (!shulkerBulletEntity.getWorld().isClient && ((IEntityExtraData) shulkerBulletEntity).getPersistentData().getBoolean(Strings.Tags.BLINDNESS_BULLET)) {
+			((ServerWorld)shulkerBulletEntity.getWorld()).spawnParticles(ParticleTypes.ENTITY_EFFECT, shulkerBulletEntity.getX(), shulkerBulletEntity.getY(), shulkerBulletEntity.getZ(), 1, 0d, 0d, 0d, 0d);
 		}
 	}
 }

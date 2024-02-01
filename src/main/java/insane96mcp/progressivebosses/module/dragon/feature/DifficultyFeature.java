@@ -107,7 +107,7 @@ public class DifficultyFeature implements LabelConfigGroup {
 
 	//Increase Player Difficulty
 	public void onDeath(OnLivingDeathEvent event) {
-		if (event.getEntity().world.isClient)
+		if (event.getEntity().getWorld().isClient)
 			return;
 
 		if (!(event.getEntity() instanceof EnderDragonEntity dragon))
@@ -118,17 +118,17 @@ public class DifficultyFeature implements LabelConfigGroup {
 		BlockPos pos2 = new BlockPos(radius, radius, radius);
 		Box bb = new Box(pos1, pos2);
 
-		List<ServerPlayerEntity> players = dragon.world.getNonSpectatingEntities(ServerPlayerEntity.class, bb);
+		List<ServerPlayerEntity> players = dragon.getWorld().getNonSpectatingEntities(ServerPlayerEntity.class, bb);
 		//If no players are found in the "Spawn Radius Player Check", try to get the nearest player
 		if (players.size() == 0) {
-			ServerPlayerEntity nearestPlayer = (ServerPlayerEntity) dragon.world.getClosestPlayer(dragon.getX(), dragon.getY(), dragon.getZ(), Double.MAX_VALUE, true);
+			ServerPlayerEntity nearestPlayer = (ServerPlayerEntity) dragon.getWorld().getClosestPlayer(dragon.getX(), dragon.getY(), dragon.getZ(), Double.MAX_VALUE, true);
 			players.add(nearestPlayer);
 		}
 
 		for (ServerPlayerEntity player : players) {
 			AComponents.DF.maybeGet(player).ifPresent(difficulty -> {
 				if (difficulty.getKilledDragons() <= this.startingDifficulty && this.showFirstKilledDragonMessage)
-					player.sendMessage(MutableText.of(new TranslatableTextContent(Strings.Translatable.FIRST_DRAGON_KILL)), true);
+					player.sendMessage(MutableText.of(new TranslatableTextContent(Strings.Translatable.FIRST_DRAGON_KILL, null, null)), true);
 				if (difficulty.getKilledDragons() < this.maxDifficulty)
 					difficulty.addKilledDragons(1);
 			});

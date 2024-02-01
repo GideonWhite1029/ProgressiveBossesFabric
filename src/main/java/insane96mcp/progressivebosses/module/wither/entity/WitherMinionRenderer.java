@@ -21,7 +21,7 @@ public class WitherMinionRenderer extends BipedEntityRenderer<WitherMinion, With
 
 	public WitherMinionRenderer(EntityRendererFactory.Context p_174382_, EntityModelLayer p_174383_, EntityModelLayer p_174384_, EntityModelLayer p_174385_) {
 		super(p_174382_, new WitherMinionModel<>(p_174382_.getPart(p_174383_)), 0.5F);
-		this.addFeature(new ArmorFeatureRenderer<>(this, new WitherMinionModel<>(p_174382_.getPart(p_174384_)), new WitherMinionModel<>(p_174382_.getPart(p_174385_))));
+		this.addFeature(new ArmorFeatureRenderer<>(this, new WitherMinionModel<>(p_174382_.getPart(p_174384_)), new WitherMinionModel<>(p_174382_.getPart(p_174385_)), p_174382_.getModelManager()));
 	}
 
 	/**

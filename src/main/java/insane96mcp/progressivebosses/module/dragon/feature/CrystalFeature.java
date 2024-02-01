@@ -13,6 +13,8 @@ import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.boss.dragon.phase.Phase;
 import net.minecraft.entity.boss.dragon.phase.PhaseType;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
@@ -114,7 +116,7 @@ public class CrystalFeature implements LabelConfigGroup {
 		dragon.getPhaseManager().setPhase(CrystalRespawnPhase.getPhaseType());
 		CrystalRespawnPhase phase = (CrystalRespawnPhase) dragon.getPhaseManager().getCurrent();
 
-		List<EndSpikeFeature.Spike> spikes = new ArrayList<>(EndSpikeFeature.getSpikes((ServerWorld)dragon.world));
+		List<EndSpikeFeature.Spike> spikes = new ArrayList<>(EndSpikeFeature.getSpikes((ServerWorld)dragon.getWorld()));
 		spikes.sort(Comparator.comparingInt(EndSpikeFeature.Spike::getRadius).reversed());
 		for (int i = 0; i < crystalsRespawned; i++) {
 			EndSpikeFeature.Spike targetSpike = spikes.get(i);
@@ -159,21 +161,21 @@ public class CrystalFeature implements LabelConfigGroup {
 		List<EndCrystalEntity> crystals = new ArrayList<>();
 
 		//Order from smaller towers to bigger ones
-		List<EndSpikeFeature.Spike> spikes = new ArrayList<>(EndSpikeFeature.getSpikes((ServerWorld) dragon.world));
+		List<EndSpikeFeature.Spike> spikes = new ArrayList<>(EndSpikeFeature.getSpikes((ServerWorld) dragon.getWorld()));
 		spikes.sort(Comparator.comparingInt(EndSpikeFeature.Spike::getRadius));
 
 		for(EndSpikeFeature.Spike spike : spikes) {
-			crystals.addAll(dragon.world.getNonSpectatingEntities(EndCrystalEntity.class, spike.getBoundingBox()));
+			crystals.addAll(dragon.getWorld().getNonSpectatingEntities(EndCrystalEntity.class, spike.getBoundingBox()));
 		}
 
 		//Remove all the crystals that already have cages around
-		crystals.removeIf(c -> c.world.getBlockState(c.getBlockPos().up(2)).getBlock() == Blocks.IRON_BARS);
+		crystals.removeIf(c -> c.getWorld().getBlockState(c.getBlockPos().up(2)).getBlock() == Blocks.IRON_BARS);
 
 		int crystalsInvolved = Math.round(difficulty - this.moreCagesAtDifficulty + 1);
 		int cagesGenerated = 0;
 
 		for (EndCrystalEntity crystal : crystals) {
-			generateCage(crystal.world, crystal.getBlockPos());
+			generateCage(crystal.getWorld(), crystal.getBlockPos());
 
 			cagesGenerated++;
 			if (cagesGenerated == crystalsInvolved || cagesGenerated == this.maxBonusCages)
@@ -197,11 +199,11 @@ public class CrystalFeature implements LabelConfigGroup {
 		List<EndCrystalEntity> crystals = new ArrayList<>();
 
 		//Order from smaller towers to bigger ones
-		List<EndSpikeFeature.Spike> spikes = new ArrayList<>(EndSpikeFeature.getSpikes((ServerWorld) dragon.world));
+		List<EndSpikeFeature.Spike> spikes = new ArrayList<>(EndSpikeFeature.getSpikes((ServerWorld) dragon.getWorld()));
 		spikes.sort(Comparator.comparingInt(EndSpikeFeature.Spike::getRadius));
 
 		for(EndSpikeFeature.Spike spike : spikes) {
-			crystals.addAll(dragon.world.getEntitiesByClass(EndCrystalEntity.class, spike.getBoundingBox(), EndCrystalEntity::shouldShowBottom));
+			crystals.addAll(dragon.getWorld().getEntitiesByClass(EndCrystalEntity.class, spike.getBoundingBox(), EndCrystalEntity::shouldShowBottom));
 		}
 
 		int crystalsMax = (int) Math.ceil((difficulty + 1 - this.moreCrystalsAtDifficulty) / this.moreCrystalsStep);
@@ -210,7 +212,7 @@ public class CrystalFeature implements LabelConfigGroup {
 		int crystalSpawned = 0;
 
 		for (EndCrystalEntity crystal : crystals) {
-			generateCrystalInTower(dragon.world, crystal.getX(), crystal.getY(), crystal.getZ());
+			generateCrystalInTower(dragon.getWorld(), crystal.getX(), crystal.getY(), crystal.getZ());
 
 			crystalSpawned++;
 			if (crystalSpawned == crystalsMax || crystalSpawned == this.moreCrystalsMax)
@@ -225,7 +227,7 @@ public class CrystalFeature implements LabelConfigGroup {
 		if (!this.explosionImmune)
 			return false;
 
-		return source.isExplosive();
+		return source.isOf(DamageTypes.EXPLOSION);
 	}
 
 	@ConfigEntries.Exclude
@@ -237,7 +239,7 @@ public class CrystalFeature implements LabelConfigGroup {
 		int spawnY = (int) (y - RandomHelper.getInt(world.getRandom(), 12, 24));
 		if (spawnY < centerPodium.getY())
 			spawnY = (int) centerPodium.getY();
-		BlockPos crystalPos = new BlockPos(x, spawnY, z);
+		BlockPos crystalPos = new BlockPos((int) x, spawnY, (int) z);
 
 		Stream<BlockPos> blocks = BlockPos.stream(crystalPos.add(-1, -1, -1), crystalPos.add(1, 1, 1));
 

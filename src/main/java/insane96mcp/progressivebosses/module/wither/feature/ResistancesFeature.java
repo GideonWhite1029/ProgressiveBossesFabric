@@ -1,14 +1,11 @@
 package insane96mcp.progressivebosses.module.wither.feature;
 
-import insane96mcp.progressivebosses.utils.IEntityExtraData;
-import insane96mcp.progressivebosses.utils.Label;
-import insane96mcp.progressivebosses.utils.LabelConfigGroup;
-import insane96mcp.progressivebosses.utils.LivingEntityEvents;
-import insane96mcp.progressivebosses.utils.Strings;
+import insane96mcp.progressivebosses.utils.*;
 import insane96mcp.progressivebosses.utils.LivingEntityEvents.OnLivingHurtEvent;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.nbt.NbtCompound;
 
 @ConfigEntries(includeAll = true)
@@ -50,7 +47,7 @@ public class ResistancesFeature implements LabelConfigGroup {
 			return;
 
 		//Handle Magic Damage
-		if (event.getSource().isMagic() && this.magicDamageBonus > 0d) {
+		if ((event.getSource().isOf(DamageTypes.MAGIC) || event.getSource().isOf(DamageTypes.INDIRECT_MAGIC)) && this.magicDamageBonus > 0d) {
 			double missingHealth = wither.getMaxHealth() - wither.getHealth();
 			event.setAmount((event.getAmount() * (float) (missingHealth / (this.magicDamageBonus) + 1)));
 		}

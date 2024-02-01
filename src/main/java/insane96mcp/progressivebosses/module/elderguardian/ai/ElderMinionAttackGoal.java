@@ -78,7 +78,7 @@ public class ElderMinionAttackGoal extends Goal {
 				f += 2.0F;
 			}
 
-			livingentity.damage(DamageSources.magic(this.guardian, this.guardian), f);
+			livingentity.damage(DamageSource.magic(this.guardian, this.guardian), f);
 			livingentity.damage(DamageSource.mob(this.guardian), (float)this.guardian.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE));
 			this.guardian.setTarget(null);
 		}

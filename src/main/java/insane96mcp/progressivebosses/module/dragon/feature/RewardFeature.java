@@ -54,7 +54,7 @@ public class RewardFeature implements LabelConfigGroup {
 		this.dropsList = Drop.parseDropsList(dropsListConfig);
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> this.onSpawn(new DummyEvent(world, entity)));
 		LivingEntityEvents.DEATH.register((event) -> this.onDeath(event));
-		LivingEntityEvents.TICK.register((entity) -> this.onUpdate(new DummyEvent(entity.world, entity)));
+		LivingEntityEvents.TICK.register((entity) -> this.onUpdate(new DummyEvent(entity.getWorld(), entity)));
 	}
 
 	public void onSpawn(DummyEvent event) {
@@ -113,7 +113,7 @@ public class RewardFeature implements LabelConfigGroup {
 		}
 
 		for (int i = 0; i < eggsToDrop; i++) {
-			dragon.world.setBlockState(new BlockPos(0, 255 - i, 0), Blocks.DRAGON_EGG.getDefaultState());
+			dragon.getWorld().setBlockState(new BlockPos(0, 255 - i, 0), Blocks.DRAGON_EGG.getDefaultState());
 		}
 	}
 
@@ -127,7 +127,7 @@ public class RewardFeature implements LabelConfigGroup {
 		NbtCompound tags = ((IEntityExtraData) dragon).getPersistentData();
 		float difficulty = tags.getFloat(Strings.Tags.DIFFICULTY);
 		for (Drop drop : this.dropsList) {
-			drop.drop(dragon.world, dragon.getPos(), difficulty);
+			drop.drop(dragon.getWorld(), dragon.getPos(), difficulty);
 		}
 	}
 

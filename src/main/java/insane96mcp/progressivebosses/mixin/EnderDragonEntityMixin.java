@@ -6,6 +6,8 @@ import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonPart;
 import net.minecraft.entity.boss.dragon.phase.PhaseType;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.damage.EntityDamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.world.World;
@@ -23,7 +25,7 @@ public class EnderDragonEntityMixin extends MobEntity {
 	@Inject(at = @At("HEAD"), method = "hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z")
 	private void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callback) {
 		EnderDragonEntity $this = (EnderDragonEntity) (Object) this;
-		if (source instanceof EntityDamageSource && !((EntityDamageSource)source).isThorns()) {
+		if (source instanceof DamageSource && !source.isOf(DamageTypes.THORNS)) {
 			$this.damagePart($this.getBodyParts()[2], source, amount);
 		}
 	}

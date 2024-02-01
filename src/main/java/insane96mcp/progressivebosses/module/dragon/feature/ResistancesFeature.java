@@ -14,6 +14,8 @@ import me.lortseam.completeconfig.api.ConfigEntry;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.boss.dragon.phase.Phase;
 import net.minecraft.entity.boss.dragon.phase.PhaseType;
+import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 
@@ -61,7 +63,7 @@ public class ResistancesFeature implements LabelConfigGroup {
 		if (this.explosionDamageReduction == 0d)
 			return;
 
-		if (event.getSource().isExplosive() && !event.getSource().getName().equals("fireworks")) {
+		if (event.getSource().isOf(DamageTypes.EXPLOSION) && !event.getSource().getName().equals("fireworks")) {
 			event.setAmount((event.getAmount() - (float) (event.getAmount() * this.explosionDamageReduction)));
 		}
 	}

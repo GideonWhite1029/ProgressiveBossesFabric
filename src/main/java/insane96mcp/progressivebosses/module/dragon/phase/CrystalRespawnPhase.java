@@ -2,17 +2,18 @@ package insane96mcp.progressivebosses.module.dragon.phase;
 
 import insane96mcp.progressivebosses.module.dragon.feature.CrystalFeature;
 import insane96mcp.progressivebosses.utils.LogHelper;
-import javax.annotation.Nullable;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.boss.dragon.phase.AbstractPhase;
 import net.minecraft.entity.boss.dragon.phase.PhaseType;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
 import net.minecraft.world.gen.feature.EndSpikeFeature;
+
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class CrystalRespawnPhase extends AbstractPhase {
@@ -107,7 +108,7 @@ public class CrystalRespawnPhase extends AbstractPhase {
 
 	@Override
 	public float modifyDamageTaken(DamageSource source, float amount) {
-		if (source.isExplosive() && !source.getName().equals("fireworks"))
+		if (source.isOf(DamageTypes.EXPLOSION) && !source.getName().equals("fireworks"))
 			return amount;
 
 		return amount * 1.33f;

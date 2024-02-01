@@ -24,6 +24,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
@@ -216,7 +217,7 @@ public class MinionFeature implements LabelConfigGroup {
 			return;
 
 		//Handle Magic Damage
-		if (event.getSource().isMagic()) {
+		if (event.getSource().isOf(DamageTypes.MAGIC) && event.getSource().isOf(DamageTypes.INDIRECT_MAGIC)) {
 			event.setAmount((float) (event.getAmount() * this.magicDamageMultiplier));
 		}
 	}
