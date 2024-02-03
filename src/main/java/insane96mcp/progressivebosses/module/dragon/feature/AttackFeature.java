@@ -3,7 +3,10 @@ package insane96mcp.progressivebosses.module.dragon.feature;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
+import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
+import org.jetbrains.annotations.Nullable;
 
 import insane96mcp.progressivebosses.module.Modules;
 import insane96mcp.progressivebosses.module.dragon.entity.AreaEffectCloud3DEntity;
@@ -177,7 +180,7 @@ public class AttackFeature implements LabelConfigGroup {
 
 		double chance = this.chargePlayerMaxChance * (difficulty / Modules.dragon.difficulty.maxDifficulty);
 
-		BlockPos centerPodium = dragon.getWorld().getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.ORIGIN);
+		BlockPos centerPodium = dragon.getWorld().getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.offsetOrigin(BlockPos.ORIGIN));
 		Box boundingBox = new Box(centerPodium).expand(64d);
 		List<PlayerEntity> players = dragon.getWorld().getEntitiesByClass(PlayerEntity.class, boundingBox, EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR);
 
@@ -195,7 +198,7 @@ public class AttackFeature implements LabelConfigGroup {
 	}
 
 	private void chargePlayer(EnderDragonEntity dragon) {
-		BlockPos centerPodium = dragon.getWorld().getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.ORIGIN);
+		BlockPos centerPodium = dragon.getWorld().getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.offsetOrigin(BlockPos.ORIGIN));
 		Box bb = new Box(centerPodium).expand(64d);
 		ServerPlayerEntity player = (ServerPlayerEntity) getRandomPlayerNearCrystal(dragon.getWorld(), bb);
 
@@ -232,7 +235,7 @@ public class AttackFeature implements LabelConfigGroup {
 	}
 
 	private void fireballPlayer(EnderDragonEntity dragon) {
-		BlockPos centerPodium = dragon.getWorld().getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.ORIGIN);
+		BlockPos centerPodium = dragon.getWorld().getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.offsetOrigin(BlockPos.ORIGIN));
 		Box bb = new Box(centerPodium).expand(64d);
 		ServerPlayerEntity player = (ServerPlayerEntity) getRandomPlayer(dragon.getWorld(), bb);
 
@@ -268,7 +271,12 @@ public class AttackFeature implements LabelConfigGroup {
 		List<LivingEntity> livingEntities = fireball.getWorld().getNonSpectatingEntities(LivingEntity.class, axisAlignedBB);
 		for (LivingEntity livingEntity : livingEntities) {
 			if (livingEntity.squaredDistanceTo(fireball.getPos()) < 20.25d)
-				livingEntity.damage((new ProjectileDamageSource(Strings.Translatable.DRAGON_FIREBALL, fireball, shooter)).setBypassesArmor().setProjectile().setUsesMagic(), damage);
+			{
+				//(new DamageSource(Strings.Translatable.DRAGON_FIREBALL, fireball, shooter)).setBypassesArmor().setProjectile().setUsesMagic(), damage
+				var damageType = RegistryEntry.of(livingEntity.getWorld().getDamageSources().registry.get(DamageTypes.DRAGON_BREATH));
+				var damageSource = new DamageSource(damageType,fireball,shooter);
+				livingEntity.damage(damageSource,damage);
+			}
 		}
 	}
 

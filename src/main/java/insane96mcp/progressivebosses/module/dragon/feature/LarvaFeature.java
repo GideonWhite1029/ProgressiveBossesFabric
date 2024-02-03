@@ -98,7 +98,7 @@ public class LarvaFeature implements LabelConfigGroup {
 		}
 
 		//If there is no player in the main island don't spawn larvae
-		BlockPos centerPodium = dragon.getWorld().getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.ORIGIN);
+		BlockPos centerPodium = dragon.getWorld().getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.offsetOrigin(BlockPos.ORIGIN));
 		Box bb = new Box(centerPodium).expand(64d);
 		List<ServerPlayerEntity> players = world.getNonSpectatingEntities(ServerPlayerEntity.class, bb);
 
