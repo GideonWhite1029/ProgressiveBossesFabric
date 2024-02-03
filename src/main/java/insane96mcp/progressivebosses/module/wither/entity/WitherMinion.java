@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
 
 import insane96mcp.progressivebosses.module.wither.ai.minion.MinionNearestAttackableTargetGoal;
 import net.minecraft.entity.Entity;
@@ -42,6 +41,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class WitherMinion extends AbstractSkeletonEntity {
 

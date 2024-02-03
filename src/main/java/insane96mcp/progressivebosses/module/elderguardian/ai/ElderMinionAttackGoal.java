@@ -5,8 +5,10 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.mob.ElderGuardianEntity;
 import net.minecraft.entity.mob.GuardianEntity;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.Difficulty;
 import java.util.EnumSet;
 
@@ -78,8 +80,8 @@ public class ElderMinionAttackGoal extends Goal {
 				f += 2.0F;
 			}
 
-			livingentity.damage(DamageSource.magic(this.guardian, this.guardian), f);
-			livingentity.damage(DamageSource.mob(this.guardian), (float)this.guardian.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE));
+			livingentity.damage(new DamageSource(RegistryEntry.of(this.guardian.getWorld().getDamageSources().registry.get(DamageTypes.MAGIC)),this.guardian, this.guardian), f);
+			livingentity.damage(new DamageSource(RegistryEntry.of(this.guardian.getWorld().getDamageSources().registry.get(DamageTypes.MOB_ATTACK)),this.guardian), (float)this.guardian.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE));
 			this.guardian.setTarget(null);
 		}
 

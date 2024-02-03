@@ -108,7 +108,7 @@ public class CrystalFeature implements LabelConfigGroup {
 
 		dragonTags.putByte(Strings.Tags.CRYSTAL_RESPAWN, (byte) (crystalRespawn + 1));
 
-		double crystalsRespawned = MathHelper.clamp(difficulty * this.crystalRespawnPerDifficulty, 0, EndSpikeFeature.field_31516);
+		double crystalsRespawned = MathHelper.clamp(difficulty * this.crystalRespawnPerDifficulty, 0, EndSpikeFeature.COUNT);
 		crystalsRespawned = Utils.getAmountWithDecimalChance(dragon.getRandom(), crystalsRespawned);
 		if (crystalsRespawned == 0d)
 			return;
@@ -234,7 +234,7 @@ public class CrystalFeature implements LabelConfigGroup {
 	private static final Identifier ENDERGETIC_CRYSTAL_HOLDER_RL = new Identifier("endergetic:crystal_holder");
 
 	public static EndCrystalEntity generateCrystalInTower(World world, double x, double y, double z) {
-		Vec3d centerPodium = Vec3d.ofBottomCenter(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.ORIGIN));
+		Vec3d centerPodium = Vec3d.ofBottomCenter(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPortalFeature.offsetOrigin(BlockPos.ORIGIN)));
 
 		int spawnY = (int) (y - RandomHelper.getInt(world.getRandom(), 12, 24));
 		if (spawnY < centerPodium.getY())
